@@ -1,7 +1,7 @@
 @echo off
 REM Use specific python to create/use local venv, install deps
 
-set "PYTHON_EXE=C:\Users\Adan\Documents\Temporal\python311\python.exe"
+set "PYTHON_EXE=C:\Users\Adan\Documents\Tmp\python311\python.exe"
 
 REM switch to script directory
 cd /d "%~dp0"
