@@ -1,3 +1,2 @@
-# Example dependencies imported by main.py.
 numpy>=1.26
 pandas>=2.0
