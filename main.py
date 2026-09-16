@@ -44,37 +44,32 @@ CloseHandle.restype = wintypes.BOOL
 
 
 SIGNATURES = {
-    "PNG": b"\x89PNG\r\n\x1a\n",
-    "JPEG": b"\xff\xd8\xff",
-    "GIF87a": b"GIF87a",
-    "GIF89a": b"GIF89a",
-    "BMP": b"BM",
-    "TIFF little-endian": b"II\x2a\x00",
-    "TIFF big-endian": b"MM\x00\x2a",
-    "ICO": b"\x00\x00\x01\x00",
-    "DDS": b"DDS ",
-    "KTX": b"\xabKTX 11\xbb\r\n\x1a\n",
-    "KTX2": b"\xabKTX 20\xbb\r\n\x1a\n",
     "FLAC": b"fLaC",
     "Ogg": b"OggS",
     "MP3 ID3": b"ID3",
     "MIDI": b"MThd",
     "AU": b".snd",
-    "Matroska/WebM": b"\x1a\x45\xdf\xa3",
-    "QuickTime atom": b"moov",
-    "ZIP": b"PK\x03\x04",
-    "GZIP": b"\x1f\x8b\x08",
-    "7-Zip": b"7z\xbc\xaf\x27\x1c",
+
+    # Imagenes: "PNG": b"\x89PNG\r\n\x1a\n", "JPEG": b"\xff\xd8\xff",
+    # "GIF87a": b"GIF87a", "GIF89a": b"GIF89a", "BMP": b"BM",
+    # "TIFF little-endian": b"II\x2a\x00", "TIFF big-endian": b"MM\x00\x2a",
+    # "ICO": b"\x00\x00\x01\x00", "DDS": b"DDS ",
+    # "KTX": b"\xabKTX 11\xbb\r\n\x1a\n", "KTX2": b"\xabKTX 20\xbb\r\n\x1a\n",
+    # Video: "Matroska/WebM": b"\x1a\x45\xdf\xa3", "QuickTime atom": b"moov",
+    # Comprimidos: "ZIP": b"PK\x03\x04", "GZIP": b"\x1f\x8b\x08", "7-Zip": b"7z\xbc\xaf\x27\x1c",
 }
 
-RIFF_TYPES = {b"WAVE": "WAV", b"AVI ": "AVI", b"WEBP": "WEBP"}
+RIFF_TYPES = {
+    b"WAVE": "WAV",
+    # Video/imagen: b"AVI ": "AVI", b"WEBP": "WEBP",
+}
 
 ISO_BRANDS = {
     b"M4A ": "M4A/M4B", b"M4B ": "M4A/M4B",
-    b"isom": "MP4", b"iso2": "MP4", b"mp41": "MP4", b"mp42": "MP4", b"avc1": "MP4", b"dash": "MP4",
-    b"qt  ": "QuickTime",
-    b"heic": "HEIF/HEIC", b"heix": "HEIF/HEIC", b"hevc": "HEIF/HEIC", b"hevx": "HEIF/HEIC", b"mif1": "HEIF/HEIC",
-    b"avif": "AVIF", b"avis": "AVIF",
+    # Video: b"isom": "MP4", b"iso2": "MP4", b"mp41": "MP4", b"mp42": "MP4",
+    # b"avc1": "MP4", b"dash": "MP4", b"qt  ": "QuickTime",
+    # Imagenes: b"heic": "HEIF/HEIC", b"heix": "HEIF/HEIC", b"hevc": "HEIF/HEIC",
+    # b"hevx": "HEIF/HEIC", b"mif1": "HEIF/HEIC", b"avif": "AVIF", b"avis": "AVIF",
 }
 
 
@@ -88,14 +83,14 @@ def find_all(data: bytes, pattern: bytes):
 def detect_riff(data: bytes, offset: int):
     if offset + 12 > len(data):
         return None
-    return RIFF_TYPES.get(data[offset + 8:offset + 12], "RIFF")
+    return RIFF_TYPES.get(data[offset + 8:offset + 12])
 
 
 def detect_iso_bmff(data: bytes, offset: int):
     if offset < 0 or offset + 12 > len(data):
         return None
     brand = data[offset + 8:offset + 12]
-    return ISO_BRANDS.get(brand, f"ISO-BMFF ({brand.decode('ascii', errors='replace')})")
+    return ISO_BRANDS.get(brand)
 
 
 def is_mp3_frame(data: bytes, offset: int):
